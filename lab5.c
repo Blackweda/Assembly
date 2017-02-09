@@ -15,7 +15,7 @@ float const scaleForLookup = 0.5;
 const unsigned int size = 65536; // maximum size of signed 16 bit integer  
 const unsigned int sizeHalf = 32767;
 const signed int min = -32768;
-const unsigned int mult3Table[11] = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3 }; // look-up table
+//const unsigned int mult3Table[11] = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3 }; // look-up table
 
 // Creates our randomly generated audio sample 
 void createAudioSample(int16_t* sample_)
@@ -99,7 +99,7 @@ int main()
 
     gettimeofday(&t1, NULL); // starting time
     naiveVolumeUp(sample); // start naive test
-    printf("sample 15: %d\n", sample[14]);
+    //printf("sample 15: %d\n", sample[14]);
     gettimeofday(&t2, NULL); // end time
     printf("\nNaive volume up\n===============\n");
     printExecTime(t1, t2);
@@ -107,7 +107,7 @@ int main()
 
     gettimeofday(&t1, NULL); // starting time
     lookupTableVolumUp(sample); // start lookup table approach 
-    printf("sample 15: %d\n", sample[14]);
+    //printf("sample 15: %d\n", sample[14]);
     gettimeofday(&t2, NULL); // end time
     printf("\nLookup volume up\n================\n");
     printExecTime(t1, t2);
