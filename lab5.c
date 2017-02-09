@@ -1,7 +1,7 @@
 /*
  * SPO600 - Lab 5.1
  * This program adjusts the volume of a sequence of sound samples
- * using the first "naive" approach.
+ * using 3 approaches (naive, lookup, bitwise)
  * */
 
 #include <stdio.h>
@@ -20,7 +20,7 @@ const unsigned int mult3Table[11] = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3 }; // look
 // Creates our randomly generated audio sample 
 void createAudioSample(int16_t* sample_)
 {
-    for(int i=0; i <= max; i++)
+    for(int i = 0; i <= max; i++)
     {
         sample_[i] = rand();
         //printf("sample %i = %i\n", i, sample_[i]);
@@ -28,7 +28,7 @@ void createAudioSample(int16_t* sample_)
 }
 
 // First "naive" approach
-// Adjusts volume up by volume scale factor
+// Volume up using multiply by volume scale factor
 void naiveVolumeUp(int16_t* sample_)
 {
     for (int i = 0; i <= max; i++)
@@ -38,8 +38,8 @@ void naiveVolumeUp(int16_t* sample_)
     }
 }
 
-// Use lookup table
-void useLookupTable(int16_t* sample_)
+// Use lookup table to adjust volume up
+void lookupTableVolumUp(int16_t* sample_)
 {
     // Create Lookup table
     int16_t lookupTable[size];
@@ -57,12 +57,13 @@ void useLookupTable(int16_t* sample_)
 }
 
 // Use bit shifting to adjust volume by volume scale factor
+// starter...
 void bitwiseVolUp(int16_t* sample)
 {
     int16_t bitwise[size];
     for (int i = 0; i <= size; i++)
     {
-        bitwise[size] = sample[i] << 1;
+        bitwise[size] = sample[i] << 1; // (int32_t)volume*2^16
         printf("bitwise %i = %i\n", i, bitwise[size]);
     }
 }
@@ -76,6 +77,14 @@ void printExecTime(struct timeval t1, struct timeval t2)
     printf("elapsed: %dms\n", elapsed);
 }
 
+void printSpecifiedRange(int16_t* sample, int start, int end)
+{
+    for (int i = start; i <= end; i++)
+    {
+        printf("sample[%i]=%d\n",i,sample[i]);
+    }
+}
+
 int main()
 {
     struct timeval t1, t2;
@@ -84,19 +93,25 @@ int main()
     int16_t* sample = malloc(max*sizeof(int16_t));
 
     createAudioSample(sample);
-    printf("sample 15: %d\n", sample[14]);
+    //printf("sample 15: %d\n", sample[14]);
+    printf("\nAudio sample\n============\n");
+    printSpecifiedRange(sample,0,7);
 
     gettimeofday(&t1, NULL); // starting time
     naiveVolumeUp(sample); // start naive test
     printf("sample 15: %d\n", sample[14]);
     gettimeofday(&t2, NULL); // end time
+    printf("\nNaive volume up\n===============\n");
     printExecTime(t1, t2);
+    printSpecifiedRange(sample,0,7);
 
     gettimeofday(&t1, NULL); // starting time
-    useLookupTable(sample); // start lookup table approach 
+    lookupTableVolumUp(sample); // start lookup table approach 
     printf("sample 15: %d\n", sample[14]);
     gettimeofday(&t2, NULL); // end time
+    printf("\nLookup volume up\n================\n");
     printExecTime(t1, t2);
+    printSpecifiedRange(sample,0,7);
 
     /*gettimeofday(&t1, NULL); // starting time
     bitwiseVolUp(sample); // start lookup table approach 
