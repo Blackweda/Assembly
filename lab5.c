@@ -20,7 +20,7 @@ const unsigned int mult3Table[11] = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3 }; // look
 // Creates our randomly generated audio sample 
 void createAudioSample(int16_t* sample_)
 {
-    for(int i=0; i <= max; i++)
+    for(int i = 0; i <= max; i++)
     {
         sample_[i] = rand();
         //printf("sample %i = %i\n", i, sample_[i]);
@@ -76,6 +76,14 @@ void printExecTime(struct timeval t1, struct timeval t2)
     printf("elapsed: %dms\n", elapsed);
 }
 
+void printSpecifiedRange(int16_t* sample, int start, int end)
+{
+    for (int i = start; i <= end; i++)
+    {
+        printf("sample[%i]=%d\n",i,sample[i]);
+    }
+}
+
 int main()
 {
     struct timeval t1, t2;
@@ -84,19 +92,25 @@ int main()
     int16_t* sample = malloc(max*sizeof(int16_t));
 
     createAudioSample(sample);
-    printf("sample 15: %d\n", sample[14]);
+    //printf("sample 15: %d\n", sample[14]);
+    printf("\nAudio sample\n============\n");
+    printSpecifiedRange(sample,0,7);
 
     gettimeofday(&t1, NULL); // starting time
     naiveVolumeUp(sample); // start naive test
     printf("sample 15: %d\n", sample[14]);
     gettimeofday(&t2, NULL); // end time
+    printf("\nNaive volume up\n===============\n");
     printExecTime(t1, t2);
+    printSpecifiedRange(sample,0,7);
 
     gettimeofday(&t1, NULL); // starting time
     useLookupTable(sample); // start lookup table approach 
     printf("sample 15: %d\n", sample[14]);
     gettimeofday(&t2, NULL); // end time
+    printf("\nLookup volume up\n================\n");
     printExecTime(t1, t2);
+    printSpecifiedRange(sample,0,7);
 
     /*gettimeofday(&t1, NULL); // starting time
     bitwiseVolUp(sample); // start lookup table approach 
