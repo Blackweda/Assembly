@@ -45,7 +45,7 @@ void lookupTableVolumeUp(int16_t* sample_, int16_t* newSample_)
 
     // Create Lookup table
     int16_t lookupTable[MAXSIZE];
-    for (int mult = 0, counter = 0; counter < MAXSIZE; counter++)
+    for (int mult = 0, counter = 0; counter <= MAXSIZE; counter++)
     {
         lookupTable[counter] = (uint16_t)((counter - HALF )*scale);
         //printf("%i = %d\n",counter,lookupTable[counter]);
@@ -107,8 +107,6 @@ int main()
     printExecTime(t1, t2);
     printSpecifiedRange(newSample,0,7);
 
-    //free(newSample);
-    //int16_t* newSample2 = malloc(SAMPLESNUM*sizeof(int16_t));
     gettimeofday(&t1, NULL); // starting time
     lookupTableVolumeUp(sample, newSample); // start lookup table approach 
     gettimeofday(&t2, NULL); // end time
