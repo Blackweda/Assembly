@@ -70,29 +70,40 @@ void bitwiseVolUp(int16_t* sample)
 // Calculates and prints elapsed time of execution t2 - t1
 void printExecTime(struct timeval t1, struct timeval t2)
 {
-    float elapsed = ((t2.tv_sec-t1.tv_sec) * 1000)
-                + ((t2.tv_usec - t1.tv_usec) / 1000);
+    double elapsed;
 
-    printf("elapsed: %.2fms\n", elapsed);
+    elapsed = (t2.tv_sec - t1.tv_sec) + 1e-6 * (t2.tv_usec - t1.tv_usec);
+
+    /*double x_ms, y_ms, elapsed;
+
+    x_ms = (double)t1.tv_sec*1000000 + (double)t1.tv_usec;
+    y_ms = (double)t2.tv_sec*1000000 + (double)t2.tv_usec;
+
+    elapsed = (double)y_ms - (double)x_ms;*/
+
+
+    /*unsigned long elapsed = ((t2.tv_sec - t1.tv_sec) * 1000)
+                          + ((t2.tv_usec - t1.tv_usec) / 1000);*/
+
+    printf("elapsed: %.8lf seconds\n", elapsed);
 }
 
 void printSpecifiedRange(int16_t* sample_, int start, int end)
 {
     for (int i = start; i <= end; i++)
     {
-        printf("sample[%i]=%d\n",i,sample_[i]);
+        printf("sample[%i]=%d\n", i, sample_[i]);
     }
 }
 
 int main()
 {
     struct timeval t1, t2;
-    double elapsed;
     int16_t* sample = malloc(SAMPLESNUM*sizeof(int16_t));
 
     createAudioSample(sample);
     printf("\nAudio sample\n============\n");
-    printSpecifiedRange(sample,0,7);
+    printSpecifiedRange(sample, 0, 7);
 
     int16_t* newSample = malloc(SAMPLESNUM*sizeof(int16_t));
     printf("\nNaive volume up\n===============\n");
@@ -100,14 +111,16 @@ int main()
     naiveVolumeUp(sample, newSample); // start naive test
     gettimeofday(&t2, NULL); // end time
     printExecTime(t1, t2);
-    printSpecifiedRange(newSample,0,7);
+    printSpecifiedRange(newSample, 0, 7);
 
+    free(newSample);
+    newSample = malloc(SAMPLESNUM*sizeof(int16_t));
     printf("\nLookup volume up\n================\n");
     gettimeofday(&t1, NULL); // starting time
     lookupTableVolumeUp(sample, newSample); // start lookup table approach 
     gettimeofday(&t2, NULL); // end time
     printExecTime(t1, t2);
-    printSpecifiedRange(newSample,0,7);
+    printSpecifiedRange(newSample, 0, 7);
 
     /*gettimeofday(&t1, NULL); // starting time
     bitwiseVolUp(sample); // start lookup table approach 
